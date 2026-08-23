@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Block Blast!">
+<title>Block Blast!</title>
+<link rel="icon" href="assets/icon-114.png">
+<link rel="apple-touch-icon" sizes="57x57" href="assets/icon-57.png">
+<link rel="apple-touch-icon" sizes="114x114" href="assets/icon-114.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="stat"><div class="lbl">نقاط</div><div class="val" id="score">0</div></div>
+    <div class="logo">
+      <img class="logo-img" id="logoImg" src="assets/logo.png" alt="Block Blast!"
+           onerror="this.style.display='none';var t=document.getElementById('logoTxt');t.style.display='-webkit-flex';t.style.display='flex';">
+      <span id="logoTxt" style="display:none">
+        <span class="lw"><i style="--c:#4cc9f0;--r:-5deg">B</i><i style="--c:#8ac926;--r:3deg">L</i><i style="--c:#ffca3a;--r:-2deg">O</i><i style="--c:#ff595e;--r:4deg">C</i><i style="--c:#ff924c;--r:-3deg">K</i></span>
+        <span class="lw"><i style="--c:#ffca3a;--r:3deg">B</i><i style="--c:#ff7ab6;--r:-4deg">L</i><i style="--c:#1982c4;--r:2deg">A</i><i style="--c:#8ac926;--r:-3deg">S</i><i style="--c:#ff595e;--r:5deg">T</i><i style="--c:#ffca3a;--r:-6deg" class="bang">!</i></span>
+      </span>
+    </div>
+    <div class="stat"><div class="lbl">أفضل</div><div class="val" id="best">0</div></div>
+  </header>
+  <div id="wrap">
+    <div id="board"></div>
+    <div id="fx"></div>
+  </div>
+  <div id="tray">
+    <div class="slot"><div class="piece"></div></div>
+    <div class="slot"><div class="piece"></div></div>
+    <div class="slot"><div class="piece"></div></div>
+  </div>
+</div>
+<div id="menu">
+  <div class="logo mlogo">
+    <img class="logo-img" src="assets/logo.png" alt="Block Blast!"
+         onerror="this.style.display='none';var t=document.getElementById('menuTxt');t.style.display='-webkit-flex';t.style.display='flex';">
+    <span id="menuTxt" style="display:none">
+      <span class="lw"><i style="--c:#4cc9f0;--r:-5deg">B</i><i style="--c:#8ac926;--r:3deg">L</i><i style="--c:#ffca3a;--r:-2deg">O</i><i style="--c:#ff595e;--r:4deg">C</i><i style="--c:#ff924c;--r:-3deg">K</i></span>
+      <span class="lw"><i style="--c:#ffca3a;--r:3deg">B</i><i style="--c:#ff7ab6;--r:-4deg">L</i><i style="--c:#1982c4;--r:2deg">A</i><i style="--c:#8ac926;--r:-3deg">S</i><i style="--c:#ff595e;--r:5deg">T</i><i style="--c:#ffca3a;--r:-6deg" class="bang">!</i></span>
+    </span>
+  </div>
+  <div class="mbest"><span class="mlbl">أفضل نتيجة</span><span class="mval" id="menuBest">0</span></div>
+  <button id="playBtn" type="button">Classic</button>
+</div>
+<canvas id="fxc"></canvas>
+<div id="over">
+  <div class="panel">
+    <div class="gt">انتهت اللعبة!</div>
+    <div class="gr">النقاط: <span id="fscore">0</span></div>
+    <div class="gr">الأفضل: <span id="fbest">0</span></div>
+    <button id="again" type="button">العب مجدداً</button>
+  </div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
