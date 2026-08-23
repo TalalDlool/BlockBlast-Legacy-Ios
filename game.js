@@ -45,18 +45,18 @@
   ];
 
   var SND = {
-    start: ['assets/sfx/start.ogg'],
-    pick: ['assets/sfx/pickup.ogg'],
-    place: ['assets/sfx/place.ogg'],
-    clear1: ['assets/sfx/clear1.ogg'],
-    clear2: ['assets/sfx/clear2.ogg'],
-    clear3: ['assets/sfx/clear3.ogg'],
-    combo: ['assets/sfx/combo.ogg'],
-    over: ['assets/sfx/over.ogg'],
-    vgood: ['assets/sfx/good1.ogg', 'assets/sfx/good2.ogg'],
-    vgreat: ['assets/sfx/great1.ogg', 'assets/sfx/great2.ogg'],
-    vamz: ['assets/sfx/amz1.ogg', 'assets/sfx/amz2.ogg'],
-    vunv: ['assets/sfx/unv1.ogg', 'assets/sfx/unv2.ogg']
+    start: ['assets/sfxmp3/start.mp3'],
+    pick: ['assets/sfxmp3/pickup.mp3'],
+    place: ['assets/sfxmp3/place.mp3'],
+    clear1: ['assets/sfxmp3/clear1.mp3'],
+    clear2: ['assets/sfxmp3/clear2.mp3'],
+    clear3: ['assets/sfxmp3/clear3.mp3'],
+    combo: ['assets/sfxmp3/combo.mp3'],
+    over: ['assets/sfxmp3/over.mp3'],
+    vgood: ['assets/sfxmp3/good1.mp3', 'assets/sfxmp3/good2.mp3'],
+    vgreat: ['assets/sfxmp3/great1.mp3', 'assets/sfxmp3/great2.mp3'],
+    vamz: ['assets/sfxmp3/amz1.mp3', 'assets/sfxmp3/amz2.mp3'],
+    vunv: ['assets/sfxmp3/unv1.mp3', 'assets/sfxmp3/unv2.mp3']
   };
 
   var PRAISE = [
@@ -380,32 +380,23 @@
       try { actx.resume()['catch'](function () {}); } catch (e) {}
     }
     if (actx && !soundsLoaded && !sndLoading) {
-      try { loadSounds(); } catch (e) { sndLoading = false; }
+      try { loadSounds(); } catch (e) {}
     }
     pollStart();
   }
 
-  function fetchBuf(u) {
-    return new Promise(function (res, rej) {
-      if (!window.fetch) {
-        try {
-          var x = new XMLHttpRequest();
-          x.open('GET', u, true);
-          x.responseType = 'arraybuffer';
-          x.onload = function () {
-            if ((x.status >= 200 && x.status < 300) || (x.status === 0 && x.response)) res(x.response);
-            else rej(new Error('http ' + x.status));
-          };
-          x.onerror = function () { rej(new Error('xhr error')); };
-          x.send();
-        } catch (e) { rej(e); }
-        return;
-      }
-      window.fetch(u).then(function (r) {
-        if (!r.ok) throw new Error('http ' + r.status);
-        return r.arrayBuffer();
-      }).then(res)['catch'](rej);
-    });
+  function xhrBuf(url, ok, fail) {
+    try {
+      var x = new XMLHttpRequest();
+      x.open('GET', url, true);
+      try { x.responseType = 'arraybuffer'; } catch (e2) {}
+      x.onload = function () {
+        if (!x.response || (x.status && x.status >= 400)) { fail(new Error('http')); return; }
+        ok(x.response);
+      };
+      x.onerror = function () { fail(new Error('net')); };
+      x.send();
+    } catch (e) { fail(e); }
   }
 
   function loadSounds() {
@@ -415,16 +406,16 @@
       var urls = SND[key];
       urls.forEach(function (u) {
         pending++;
-        fetchBuf(u).then(function (ab) {
-          return new Promise(function (res, rej) {
-            try { actx.decodeAudioData(ab, res, rej); }
-            catch (e) { rej(e); }
-          });
-        }).then(function (buf) {
-          if (!buffers[key]) buffers[key] = [];
-          buffers[key].push(buf);
-          soundsLoaded = true;
-        }).catch(function () {}).then(function () {
+        xhrBuf(u, function (ab) {
+          try {
+            actx.decodeAudioData(ab, function (buf) {
+              if (!buffers[key]) buffers[key] = [];
+              buffers[key].push(buf);
+              soundsLoaded = true;
+            }, function () {});
+          } catch (e) {}
+          if (--pending === 0) sndLoading = false;
+        }, function () {
           if (--pending === 0) sndLoading = false;
         });
       });
@@ -869,7 +860,7 @@
     var menu = $('menu');
     if (menu.classList.contains('hide')) return;
     addC(menu, 'hide');
-    unlockAudio();
+    try { unlockAudio(); } catch (e) {}
     introFill();
   }
 
@@ -893,7 +884,7 @@
     window.addEventListener('resize', function () { setTimeout(layout, 60); }, false);
     window.addEventListener('orientationchange', function () { setTimeout(layout, 250); }, false);
     hud();
-    unlockAudio();
+    try { unlockAudio(); } catch (e) {}
     bindMenu();
     document.addEventListener('touchstart', unlockAudio, false);
     document.addEventListener('mousedown', unlockAudio, false);
