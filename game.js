@@ -379,8 +379,33 @@
     if (actx && actx.state === 'suspended' && actx.resume) {
       try { actx.resume()['catch'](function () {}); } catch (e) {}
     }
-    if (actx && !soundsLoaded && !sndLoading) loadSounds();
+    if (actx && !soundsLoaded && !sndLoading) {
+      try { loadSounds(); } catch (e) { sndLoading = false; }
+    }
     pollStart();
+  }
+
+  function fetchBuf(u) {
+    return new Promise(function (res, rej) {
+      if (!window.fetch) {
+        try {
+          var x = new XMLHttpRequest();
+          x.open('GET', u, true);
+          x.responseType = 'arraybuffer';
+          x.onload = function () {
+            if ((x.status >= 200 && x.status < 300) || (x.status === 0 && x.response)) res(x.response);
+            else rej(new Error('http ' + x.status));
+          };
+          x.onerror = function () { rej(new Error('xhr error')); };
+          x.send();
+        } catch (e) { rej(e); }
+        return;
+      }
+      window.fetch(u).then(function (r) {
+        if (!r.ok) throw new Error('http ' + r.status);
+        return r.arrayBuffer();
+      }).then(res)['catch'](rej);
+    });
   }
 
   function loadSounds() {
@@ -390,10 +415,7 @@
       var urls = SND[key];
       urls.forEach(function (u) {
         pending++;
-        fetch(u).then(function (r) {
-          if (!r.ok) throw new Error('http ' + r.status);
-          return r.arrayBuffer();
-        }).then(function (ab) {
+        fetchBuf(u).then(function (ab) {
           return new Promise(function (res, rej) {
             try { actx.decodeAudioData(ab, res, rej); }
             catch (e) { rej(e); }
