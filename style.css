@@ -1,6 +1,9 @@
 * { -webkit-box-sizing: border-box; box-sizing: border-box; -webkit-touch-callout: none; }
 html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; -webkit-user-select: none; user-select: none; touch-action: none; }
 body {
+  position: fixed;
+  top: 0;
+  left: 0;
   background: #12142e;
   color: #fff;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -131,10 +134,17 @@ header {
   padding: 4px 6px 20px;
 }
 .slot {
+  position: relative;
   -webkit-flex: 1; flex: 1;
   display: -webkit-flex; display: flex;
   -webkit-align-items: center; align-items: center;
   -webkit-justify-content: center; justify-content: center;
+}
+.slot::before {
+  content: '';
+  position: absolute;
+  left: -10px; right: -10px;
+  top: -36px; bottom: -34px;
 }
 .piece {
   position: relative; visibility: hidden;

@@ -820,7 +820,7 @@
         var t = getXY(e);
         moveDrag(t[0], t[1]);
       }
-    }, false);
+    }, true);
     document.addEventListener('touchend', function (e) {
       if (drag) {
         e.preventDefault();
