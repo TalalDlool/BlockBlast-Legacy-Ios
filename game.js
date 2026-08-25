@@ -626,7 +626,7 @@
   function moveDrag(x, y) {
     var w = drag.el.offsetWidth, h = drag.el.offsetHeight;
     var tx = x - w / 2;
-    var ty = y - h - Math.max(20, PITCH * 0.55);
+    var ty = y - h - Math.max(36, PITCH * 1.1);
     drag.x = tx; drag.y = ty;
     setTF(drag.el, 'translate3d(' + tx + 'px,' + ty + 'px,0)');
     updateGhost();
@@ -815,8 +815,8 @@
       })(i);
     }
     document.addEventListener('touchmove', function (e) {
+      e.preventDefault();
       if (drag) {
-        e.preventDefault();
         var t = getXY(e);
         moveDrag(t[0], t[1]);
       }
